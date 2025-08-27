@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Book List</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
+    h1 { color: #333; }
+    #book-form { margin-bottom: 20px; }
+    input, button { padding: 8px; margin: 5px; }
+    ul { list-style: none; padding: 0; }
+    li { 
+      background: #fff; 
+      margin: 5px 0; 
+      padding: 10px; 
+      border-radius: 5px; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+    }
+    .actions button { margin-left: 5px; }
+  </style>
+</head>
+<body>
+  <h1>Book List</h1>
+
+  <form id="book-form">
+    <input type="text" id="titleInput" placeholder="Enter book title" required>
+    <input type="text" id="authorInput" placeholder="Enter author name" required>
+    <button type="submit">Add Book</button>
+  </form>
+
+  <ul id="book-list"></ul>
+
+  <script>
+    const apiUrl = "http://localhost:3000/books"; // Backend API
+    const bookList = document.getElementById("book-list");
+    const form = document.getElementById("book-form");
+    const titleInput = document.getElementById("titleInput");
+    const authorInput = document.getElementById("authorInput");
+
+    // Fetch and display books
+    async function loadBooks() {
+      const res = await fetch(apiUrl);
+      const books = await res.json();
+      bookList.innerHTML = "";
+      books.forEach(book => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <span><strong>${book.title}</strong> by ${book.author}</span>
+          <div class="actions">
+            <button onclick="updateBook(${book.id})">Edit</button>
+            <button onclick="deleteBook(${book.id})">Delete</button>
+          </div>
+        `;
+        bookList.appendChild(li);
+      });
+    }
+
+    // Add book
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const title = titleInput.value.trim();
+      const author = authorInput.value.trim();
+      if (!title || !author) return;
+      await fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, author })
+      });
+      titleInput.value = "";
+      authorInput.value = "";
+      loadBooks();
+    });
+
+    // Update book
+    async function updateBook(id) {
+      const newTitle = prompt("Enter new book title:");
+      const newAuthor = prompt("Enter new author name:");
+      if (!newTitle || !newAuthor) return;
+      await fetch(`${apiUrl}/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: newTitle, author: newAuthor })
+      });
+      loadBooks();
+    }
+
+    // Delete book
+    async function deleteBook(id) {
+      await fetch(`${apiUrl}/${id}`, { method: "DELETE" });
+      loadBooks();
+    }
+
+    // Initial load
+    loadBooks();
+  </script>
+</body>
+</html>

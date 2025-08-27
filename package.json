@@ -1,0 +1,24 @@
+{
+  "name": "backend-lab",
+  "version": "1.0.0",
+  "main": "13-08a.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/romitaagrawal/Backend-lab.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/romitaagrawal/Backend-lab/issues"
+  },
+  "homepage": "https://github.com/romitaagrawal/Backend-lab#readme",
+  "description": "",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
